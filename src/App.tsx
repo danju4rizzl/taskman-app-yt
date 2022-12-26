@@ -22,8 +22,7 @@ function App() {
     const [formState, setFormState] = useState("");
     const [task, setTask] = useState([]);
 
-    function handleSubmit(e: FormEvent) {
-        e.preventDefault();
+    function handleSubmit() {
         console.log("Element", formState);
         //Deejay update states here
     }
@@ -48,6 +47,7 @@ function App() {
                     <h1 className='text-5xl'>Task Manager</h1>
                     <p>A simple way to manage your tasks, anywhere</p>
                 </div>
+                {/* fix the TaskForm here*/}
                 <TaskForm onClick={handleSubmit} onChange={checker} />
             </div>
             <div className='my-auto'>
