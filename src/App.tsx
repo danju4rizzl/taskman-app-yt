@@ -2,12 +2,14 @@ import React, {
 	ChangeEvent,
 	FormEvent,
 	TextareaHTMLAttributes,
+	useEffect,
 	useState
 } from "react";
 import "./App.css";
 import bgImage from "./assets/bg.jpg";
 import TaskForm from "./components/TaskForm";
-import TaskItem from "./components/TaskItem";
+import { v4 as uuidv4 } from "uuid";
+import TaskList from "./components/TaskList";
 
 function Container(props: { child: JSX.Element[] | JSX.Element }) {
 	return (
@@ -18,6 +20,53 @@ function Container(props: { child: JSX.Element[] | JSX.Element }) {
 }
 
 function App() {
+	const [allTasks, setAllTasks] = useState([]);
+	const getLocalData = () => JSON.parse(localStorage.getItem("storedTask"));
+
+	const addNewTask = (task: string) => {
+		const newTask = { taskId: uuidv4(), task };
+		setAllTasks([...allTasks, newTask]);
+	};
+
+	const deleteTask = (id: string) => {
+		const ls = getLocalData();
+		// console.log(id);
+		// const confirmDelete = confirm("Are you sure you want to delete this task");
+		// if (!confirmDelete) return;
+		// if (confirmDelete) {
+		// 	setAllTasks(allTasks.filter((task) => task));
+		// 	alert("Task has been deleted successfully.");
+		// }
+		// setAllTasks(allTasks.filter((task) => task));
+		const t = ls.map((i) => i.taskId);
+
+		console.log(
+			"Remaining",
+			allTasks.filter((task) => task.taskId !== t)
+		);
+	};
+
+	/*
+	 * When componentMounts get stored task from localStorage
+	 * then update the allTask's state only once
+	 */
+	useEffect(() => {
+		const localData = getLocalData();
+		if (!!localData) {
+			setAllTasks(localData);
+		}
+	}, []);
+
+	/*
+	 * Always updates/store the tasks in localStorage
+	 * whenever the allTask's state changes
+	 */
+	useEffect(() => {
+		if (allTasks.length) {
+			localStorage.setItem("storedTask", JSON.stringify(allTasks)); // Store the state in local storage
+		}
+	}, [allTasks]);
+
 	return (
 		<div
 			className={`h-screen grid grid-flow-row lg:grid-flow-col content-center bg-no-repeat bg-cover bg-center text-white px-5 md:px-28 space-y-5`}
@@ -34,17 +83,16 @@ function App() {
 					<p>A simple way to manage your tasks, anywhere</p>
 				</div>
 
-				<TaskForm />
+				<TaskForm onAddTask={addNewTask} />
 			</div>
 			<div className="my-auto">
-				<ul className=" h-48 md:h-80 flex flex-col pr-4 sm:pl-10 md:pl-24 space-y-3 md:space-y-3 overflow-y-scroll">
-					{/* {task.length > 0 ? (
-						task.map((item) => <TaskItem title={item.t} />)
-					) : (
-						<p>No Task</p>
-					)} */}
-				</ul>
-				<p>na here</p>
+				<TaskList allTasks={allTasks} onDelete={deleteTask} />
+				{/* <button
+					onClick={() => localStorage.clear()}
+					className="bg-purple-900 p-2"
+				>
+					Clear All
+				</button> */}
 			</div>
 		</div>
 	);
