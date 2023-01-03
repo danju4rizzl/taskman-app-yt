@@ -4,6 +4,8 @@ import bgImage from "./assets/bg.jpg";
 import TaskForm from "./components/TaskForm";
 import { v4 as uuidv4 } from "uuid";
 import TaskList from "./components/TaskList";
+import NoTask from "./components/NoTask";
+import Heading from "./components/Heading";
 
 function Container(props: { child: JSX.Element[] | JSX.Element }) {
     return (
@@ -67,15 +69,22 @@ function App() {
             }}
         >
             <div className='grid px-5 sm:px-10 md:px-24'>
-                <div className='text-center my-12 space-y-1'>
-                    <h1 className='text-5xl'>Task Manager</h1>
-                    <p>A simple way to manage your tasks, anywhere</p>
-                </div>
+                <Heading
+                    title='Task Manager'
+                    subTitle='A simple way to manage your tasks, anywhere'
+                />
 
                 <TaskForm onAddTask={addNewTask} />
             </div>
             <div className='my-auto'>
-                <TaskList displayedTasks={allTasks} whenDelete={deleteTask} />
+                {allTasks.length > 0 ? (
+                    <TaskList
+                        displayedTasks={allTasks}
+                        whenDelete={deleteTask}
+                    />
+                ) : (
+                    <NoTask />
+                )}
             </div>
         </div>
     );
