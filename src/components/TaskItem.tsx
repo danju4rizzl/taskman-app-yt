@@ -1,4 +1,4 @@
-import { MouseEventHandler } from "react";
+
 import { BiTrash } from "react-icons/bi";
 
 type TaskItemProps = {
