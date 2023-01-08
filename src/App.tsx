@@ -8,86 +8,82 @@ import NoTask from "./components/NoTask";
 import Heading from "./components/Heading";
 
 function Container(props: { child: JSX.Element[] | JSX.Element }) {
-    return (
-        <div className='flex place-items-center px-5 sm:px-10 md:px-32'>
-            {props.child}
-        </div>
-    );
+	return (
+		<div className="flex place-items-center px-5 sm:px-10 md:px-32">
+			{props.child}
+		</div>
+	);
 }
 
 function App() {
-    const [allTasks, setAllTasks] = useState([]);
-    const getLocalData = () => JSON.parse(localStorage.getItem("storedTask"));
+	const [allTasks, setAllTasks] = useState([]);
 
-    const addNewTask = (task: string) => {
-        const newTask = { taskId: uuidv4(), task };
-        setAllTasks([...allTasks, newTask]);
-    };
+	const getLocalData = () => JSON.parse(localStorage.getItem("storedTask"));
 
-    const deleteTask = (currentId: string) => {
-        const confirmDelete = confirm(
-            "Are you sure you want to delete this task"
-        );
-        if (!confirmDelete) {
-            return;
-        } else {
-            setAllTasks(allTasks.filter((task) => task.taskId !== currentId));
-        }
-    };
+	const addNewTask = (task: string) => {
+		const newTask = { taskId: uuidv4(), task };
+		setAllTasks([...allTasks, newTask]);
+	};
 
-    /*
-     * When componentMounts get stored task from localStorage
-     * then update the allTask's state only once
-     */
-    useEffect(() => {
-        const localData = getLocalData();
-        if (!!localData) {
-            setAllTasks(localData);
-        }
-    }, []);
+	const deleteTask = (currentId: string) => {
+		const confirmDelete = confirm("Are you sure you want to delete this task");
+		if (!confirmDelete) {
+			return;
+		} else {
+			setAllTasks(allTasks.filter((task) => task.taskId !== currentId));
+		}
+	};
 
-    /*
-     * Always updates/store the tasks in localStorage
-     * whenever the allTask's state changes
-     */
-    useEffect(() => {
-        if (allTasks.length) {
-            localStorage.setItem("storedTask", JSON.stringify(allTasks)); // Store the state in local storage
-        } else {
-            localStorage.clear();
-        }
-    }, [allTasks]);
+	/*
+	 * When componentMounts get stored task from localStorage
+	 * then update the allTask's state only once
+	 */
+	useEffect(() => {
+		const localData = getLocalData();
+		if (!!localData) {
+			setAllTasks(localData);
+		}
+	}, []);
 
-    return (
-        <div
-            className={`h-screen grid grid-flow-row lg:grid-flow-col content-center bg-no-repeat bg-cover bg-center text-white px-5 md:px-28 space-y-5`}
-            style={{
-                backgroundImage: `linear-gradient(
+	/*
+	 * Always updates/store the tasks in localStorage
+	 * whenever the allTask's state changes
+	 */
+	useEffect(() => {
+		if (allTasks.length) {
+			localStorage.setItem("storedTask", JSON.stringify(allTasks)); // Store the state in local storage
+		} else {
+			localStorage.clear();
+		}
+	}, [allTasks]);
+
+	return (
+		<div
+			className={`h-screen px-10 lg:px-44 gap-y-10 grid grid-flow-row content-center bg-no-repeat bg-cover bg-center text-white`}
+			style={{
+				backgroundImage: `linear-gradient(
                                     rgba(62, 62, 62, 0.9),
                                     rgba(62, 62, 62, 0.9)),
-                                    url(${bgImage})`,
-            }}
-        >
-            <div className='grid px-5 sm:px-10 md:px-24'>
-                <Heading
-                    title='Task Manager'
-                    subTitle='A simple way to manage your tasks, anywhere'
-                />
+                                    url(${bgImage})`
+			}}
+		>
+			<div className=" mx-auto">
+				<Heading
+					title="Task Manager"
+					subTitle="A simple way to manage your tasks, anywhere"
+				/>
 
-                <TaskForm onAddTask={addNewTask} />
-            </div>
-            <div className='my-auto'>
-                {allTasks.length > 0 ? (
-                    <TaskList
-                        displayedTasks={allTasks}
-                        whenDelete={deleteTask}
-                    />
-                ) : (
-                    <NoTask />
-                )}
-            </div>
-        </div>
-    );
+				<TaskForm onAddTask={addNewTask} />
+			</div>
+			<div className="h-60 overflow-y-scroll">
+				{allTasks.length > 0 ? (
+					<TaskList displayedTasks={allTasks} whenDelete={deleteTask} />
+				) : (
+					<NoTask />
+				)}
+			</div>
+		</div>
+	);
 }
 
 export default App;
