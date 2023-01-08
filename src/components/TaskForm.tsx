@@ -20,7 +20,10 @@ export default function TaskForm({ onAddTask }: TaskFormProps) {
 	return (
 		<div className="">
 			<p className="text-sm text-center mb-3">
-				Characters: {!isEmpty ? "None 🔴" : `${isEmpty} 🟢`}
+				Characters:{" "}
+				{isEmpty > 0
+					? `${isEmpty} ${isEmpty === 70 ? "Max 🔴 " : "🟢"}`
+					: "None 🔴"}
 			</p>
 			<form className="flex " onSubmit={(e) => e.preventDefault()}>
 				<input
@@ -28,6 +31,7 @@ export default function TaskForm({ onAddTask }: TaskFormProps) {
 					placeholder="Feed Bingo at 3pm"
 					className="py-2 px-3 text-2xl rounded-lg text-center border outline-1 outline-current  bg-slate-700/50"
 					value={userValue}
+					maxLength={70}
 					onChange={(e) => setUserValue(e.target.value)}
 				/>
 				<button
